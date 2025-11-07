@@ -313,6 +313,34 @@ async function runTests() {
     }
   }
 
+  const testResponses = {
+    timestamp: new Date().toISOString(),
+    summary: {
+      total: testResults.total,
+      passed: testResults.passed,
+      failed: testResults.failed,
+      passRate: passRate
+    },
+    responses: {}  // Will store API responses by test case ID
+  };
+
+  // Get all quiz files from generated_quizzes directory
+  const quizDir = path.join(__dirname, 'generated_quizzes');
+  if (fs.existsSync(quizDir)) {
+    const files = fs.readdirSync(quizDir);
+    files.forEach(file => {
+      if (file.endsWith('.json')) {
+        const testId = file.replace('.json', '');
+        const quizData = JSON.parse(fs.readFileSync(path.join(quizDir, file), 'utf8'));
+        testResponses.responses[testId] = quizData;
+      }
+    });
+  }
+
+  const outputJsonPath = path.join(__dirname, 'test_urls_output.json');
+  fs.writeFileSync(outputJsonPath, JSON.stringify(testResponses, null, 2));
+  console.log(`\n${colors.magenta}Complete test responses saved to: ${outputJsonPath}${colors.reset}`);
+
   console.log();
 
   if (testResults.failed === 0) {

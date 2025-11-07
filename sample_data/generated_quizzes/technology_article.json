@@ -1,0 +1,242 @@
+{
+  "id": 4,
+  "url": "https://en.wikipedia.org/wiki/Artificial_intelligence",
+  "title": "Artificial intelligence",
+  "summary": "Artificial intelligence (AI) is the capability of computational systems to perform tasks typically associated with human intelligence, such as learning, reasoning, and problem-solving. The field encompasses various subfields and techniques, including machine learning and deep learning, which power applications from search engines and autonomous vehicles to generative tools. As AI becomes more advanced, it raises significant ethical concerns regarding bias, privacy, and potential existential risks, prompting global discussions on regulation.",
+  "key_entities": {
+    "people": [
+      "Garry Kasparov",
+      "Alan Turing",
+      "Noam Chomsky",
+      "Margaret Masterman",
+      "Gordon Moore",
+      "Jensen Huang",
+      "Demis Hassabis",
+      "Cynthia Dwork",
+      "Brian Christian",
+      "John Grisham",
+      "Jonathan Franzen",
+      "Geoffrey Hinton",
+      "Julia Angwin",
+      "Moritz Hardt",
+      "Stephen Hawking",
+      "Nick Bostrom",
+      "Stuart Russell",
+      "Yuval Noah Harari",
+      "Bill Gates",
+      "Elon Musk",
+      "Yoshua Bengio",
+      "Sam Altman",
+      "Jürgen Schmidhuber",
+      "Andrew Ng",
+      "Yann LeCun",
+      "Eliezer Yudkowsky",
+      "Wendell Wallach",
+      "Henry Kissinger",
+      "Eric Schmidt",
+      "Daniel Huttenlocher",
+      "Herbert Simon",
+      "Marvin Minsky",
+      "Sir James Lighthill",
+      "Rodney Brooks",
+      "Judea Pearl",
+      "Lotfi Zadeh",
+      "John McCarthy",
+      "David Chalmers",
+      "Jerry Fodor",
+      "Hilary Putnam",
+      "John Searle",
+      "I. J. Good",
+      "Vernor Vinge",
+      "Hans Moravec",
+      "Kevin Warwick",
+      "Ray Kurzweil",
+      "Aldous Huxley",
+      "Robert Ettinger",
+      "Samuel Butler",
+      "George Dyson",
+      "Karel Čapek",
+      "Mary Shelley",
+      "Arthur C. Clarke",
+      "Stanley Kubrick",
+      "Isaac Asimov",
+      "Philip K. Dick"
+    ],
+    "organizations": [
+      "Google",
+      "YouTube",
+      "Amazon",
+      "Netflix",
+      "Waymo",
+      "OpenAI",
+      "Google DeepMind",
+      "Meta",
+      "Microsoft",
+      "Apple",
+      "IBM",
+      "Alibaba Group",
+      "EleutherAI",
+      "World Pensions & Investments Forum",
+      "Nvidia",
+      "Facebook",
+      "TikTok",
+      "International Energy Agency (IEA)",
+      "Goldman Sachs",
+      "Constellation Energy",
+      "US Nuclear Regulatory Commission",
+      "Exelon",
+      "Talen Energy",
+      "Federal Energy Regulatory Commission (FERC)",
+      "Ubitus",
+      "DARPA",
+      "Anthropic",
+      "Hugging Face",
+      "Alan Turing Institute",
+      "IEEE",
+      "AI Safety Institute",
+      "United Nations",
+      "Council of Europe",
+      "Ipsos",
+      "Association for the Advancement of Artificial Intelligence (AAAI)",
+      "European Medicines Agency (EMA)"
+    ],
+    "locations": [
+      "China",
+      "United States",
+      "Iraq",
+      "Syria",
+      "Israel",
+      "Ukraine",
+      "Tel Aviv",
+      "Pennsylvania",
+      "Michigan",
+      "Lake Michigan",
+      "Taiwan",
+      "Taoyuan",
+      "Singapore",
+      "Japan",
+      "Fukushima",
+      "India",
+      "Seoul",
+      "South Korea",
+      "United Kingdom",
+      "Bletchley Park"
+    ]
+  },
+  "sections": [
+    "Goals of AI",
+    "Techniques in AI",
+    "Applications of AI",
+    "Generative AI",
+    "Ethics, Risks, and Harm",
+    "Regulation of AI",
+    "History of AI",
+    "Philosophy of AI",
+    "Future of AI"
+  ],
+  "quiz": [
+    {
+      "question": "According to the article, what are periods of disappointment and loss of funding in the history of AI research known as?",
+      "options": [
+        "A. AI Downturns",
+        "B. AI Winters",
+        "C. Algorithmic Freezes",
+        "D. Computational Coldsnaps"
+      ],
+      "answer": "B",
+      "difficulty": "easy",
+      "explanation": "The article's introduction states that the field of AI went through periods of disappointment and loss of funding, which are known as 'AI winters'."
+    },
+    {
+      "question": "What is the 'combinatorial explosion' problem that early AI reasoning algorithms faced?",
+      "options": [
+        "A. The algorithms produced too many solutions for a single problem.",
+        "B. The algorithms became exponentially slower as problems grew larger.",
+        "C. The algorithms required an explosive amount of physical hardware to run.",
+        "D. The algorithms combined unrelated data, leading to incorrect deductions."
+      ],
+      "answer": "B",
+      "difficulty": "medium",
+      "explanation": "In the 'Reasoning and problem-solving' section, the article explains that many early algorithms were insufficient for large problems because they experienced a 'combinatorial explosion,' becoming exponentially slower as the problems grew."
+    },
+    {
+      "question": "The article mentions that the COMPAS program, used by U.S. courts, exhibited racial bias. How did this bias manifest?",
+      "options": [
+        "A. It was explicitly programmed to consider race as a factor in recidivism.",
+        "B. It had a higher overall error rate for black defendants than for white defendants.",
+        "C. It was trained on a dataset that only included defendants of one race.",
+        "D. It consistently overestimated recidivism for black defendants and underestimated it for white defendants."
+      ],
+      "answer": "D",
+      "difficulty": "hard",
+      "explanation": "The 'Algorithmic bias and fairness' section details that while the overall error rate was the same for both races, the system consistently overestimated the chance a black person would re-offend and underestimated the chance a white person would not."
+    },
+    {
+      "question": "What is the primary difference between supervised and unsupervised machine learning as described in the article?",
+      "options": [
+        "A. Supervised learning uses neural networks, while unsupervised learning uses decision trees.",
+        "B. Supervised learning requires human oversight during operation, while unsupervised learning is fully autonomous.",
+        "C. Supervised learning uses training data labeled with expected answers, while unsupervised learning finds patterns in unlabeled data.",
+        "D. Supervised learning is used for classification, while unsupervised learning is used for regression."
+      ],
+      "answer": "C",
+      "difficulty": "medium",
+      "explanation": "The 'Learning' section states, 'In supervised learning, the training data is labelled with the expected answers, while in unsupervised learning, the model identifies patterns or structures in unlabelled data.'"
+    },
+    {
+      "question": "Which of the following is NOT listed in the article as a traditional goal of AI research?",
+      "options": [
+        "A. Natural language processing",
+        "B. Knowledge representation",
+        "C. Digital immortality",
+        "D. Support for robotics"
+      ],
+      "answer": "C",
+      "difficulty": "easy",
+      "explanation": "The introduction lists the traditional goals of AI research, including learning, reasoning, knowledge representation, planning, natural language processing, perception, and support for robotics. Digital immortality is mentioned in the 'See also' section but not as a traditional goal."
+    },
+    {
+      "question": "According to the 'Deep learning' section, what two main factors contributed to the sudden success of deep learning after 2012?",
+      "options": [
+        "A. The invention of the transformer architecture and the creation of the internet.",
+        "B. A major theoretical breakthrough in neural networks and government funding.",
+        "C. The increased use of symbolic AI and the development of new programming languages.",
+        "D. A massive increase in computer power (especially GPUs) and the availability of vast amounts of training data."
+      ],
+      "answer": "D",
+      "difficulty": "medium",
+      "explanation": "The article states the success of deep learning was not due to a new discovery but because of two factors: the incredible increase in computer power (including GPUs) and the availability of vast amounts of training data."
+    },
+    {
+      "question": "What is Moravec's paradox, as described in the 'Philosophy' section of the article?",
+      "options": [
+        "A. The discovery that AI is better at creative tasks than logical ones.",
+        "B. The finding that high-level 'intelligent' tasks are easy for AI, but low-level 'instinctive' tasks are very difficult.",
+        "C. The paradox that the more intelligent an AI becomes, the less it can explain its own reasoning.",
+        "D. The observation that AI systems trained on human data inevitably adopt human biases."
+      ],
+      "answer": "B",
+      "difficulty": "hard",
+      "explanation": "Under the 'Symbolic AI and its limits' subsection, the article defines Moravec's paradox as 'the discovery that high-level \"intelligent\" tasks were easy for AI, but low level \"instinctive\" tasks were extremely difficult.'"
+    },
+    {
+      "question": "What is the primary purpose of 'reinforcement learning from human feedback' (RLHF) in training GPT models?",
+      "options": [
+        "A. To pre-train the model on a large corpus of internet text.",
+        "B. To make the model more truthful, useful, and harmless.",
+        "C. To increase the model's ability to generate creative and fictional content.",
+        "D. To teach the model how to perform mathematical calculations."
+      ],
+      "answer": "B",
+      "difficulty": "medium",
+      "explanation": "The 'GPT' section explains that after pre-training, a subsequent training phase using RLHF 'makes the model more truthful, useful, and harmless.'"
+    }
+  ],
+  "related_topics": [
+    "Machine learning",
+    "Deep learning",
+    "Artificial general intelligence",
+    "Ethics of artificial intelligence",
+    "AI winter"
+  ]
+}
