@@ -88,7 +88,7 @@ function GenerateQuizTab() {
               value={url}
               onChange={handleUrlChange}
               placeholder="https://en.wikipedia.org/wiki/Article_Name"
-              className={`w-full px-4 py-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
+              className={`w-full px-4 py-3 border rounded-md outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
                 error && !isLoading ? 'border-red-300' : 'border-gray-300'
               }`}
               required
@@ -117,7 +117,6 @@ function GenerateQuizTab() {
           </button>
         </form>
         
-        {/* Loading state */}
         {isLoading && (
           <div className="mt-8 text-center py-8">
             <LoadingSpinner size="lg" />
@@ -131,7 +130,6 @@ function GenerateQuizTab() {
         )}
       </div>
 
-      {/* Quiz results */}
       {quizData && (
         <div>
           <div className="flex justify-between items-center mb-4">

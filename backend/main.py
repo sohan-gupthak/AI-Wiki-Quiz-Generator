@@ -67,7 +67,6 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# Configure CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -87,12 +86,6 @@ app.add_middleware(
 # Global exception handler
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
-    """
-    Global exception handler for unhandled errors.
-    
-    Logs the error and returns a generic error response to avoid
-    exposing internal details to clients.
-    """
     logger.error(f"Unhandled exception: {str(exc)}")
     logger.error(f"Traceback: {traceback.format_exc()}")
     
@@ -109,9 +102,6 @@ async def global_exception_handler(request, exc):
 # HTTP exception handler
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request, exc: HTTPException):
-    """
-    Handler for HTTP exceptions with proper error formatting.
-    """
     logger.warning(f"HTTP exception: {exc.status_code} - {exc.detail}")
     
     return JSONResponse(
@@ -127,11 +117,6 @@ async def http_exception_handler(request, exc: HTTPException):
 # Startup event
 @app.on_event("startup")
 async def startup_event():
-    """
-    Application startup event handler.
-    
-    Initializes the database and performs basic health checks.
-    """
     try:
         logger.info("Starting AI Wiki Quiz Generator API...")
         
@@ -158,21 +143,11 @@ async def startup_event():
 # Shutdown event
 @app.on_event("shutdown")
 async def shutdown_event():
-    """
-    Application shutdown event handler.
-    """
     logger.info("Shutting down AI Wiki Quiz Generator API...")
 
 
-# Health check endpoint
 @app.get("/health", response_model=HealthResponse)
 async def health_check(db: Session = Depends(get_database_session)):
-    """
-    Health check endpoint to verify API and database status.
-    
-    Returns:
-        HealthResponse: Current health status
-    """
     try:
         # Test database connection
         from sqlalchemy import text
@@ -191,9 +166,6 @@ async def health_check(db: Session = Depends(get_database_session)):
 # Root endpoint
 @app.get("/")
 async def root():
-    """
-    Root endpoint with API information.
-    """
     return {
         "message": "AI Wiki Quiz Generator API",
         "version": "1.0.0",
@@ -378,9 +350,6 @@ async def get_quiz_history(
     """
     Retrieve quiz history with pagination support.
     
-    Returns a list of quiz summaries containing basic information
-    about all generated quizzes, ordered by generation date (newest first).
-    
     Args:
         skip (int): Number of records to skip (for pagination)
         limit (int): Maximum number of records to return (max 100)
@@ -443,7 +412,6 @@ async def get_quiz_history(
         # Re-raise HTTP exceptions as-is
         raise
     except Exception as e:
-        # Catch any unexpected errors
         logger.error(f"Unexpected error in get_quiz_history: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -451,7 +419,6 @@ async def get_quiz_history(
         )
 
 
-# Get specific quiz endpoint
 @app.get("/quiz/{quiz_id}", response_model=QuizResponse)
 async def get_quiz_by_id(
     quiz_id: int,
@@ -459,9 +426,6 @@ async def get_quiz_by_id(
 ):
     """
     Retrieve a specific quiz by its database ID.
-    
-    Returns the complete quiz data including all questions, answers,
-    explanations, and metadata for the specified quiz.
     
     Args:
         quiz_id (int): The database ID of the quiz to retrieve
@@ -483,7 +447,6 @@ async def get_quiz_by_id(
                 detail="Quiz ID must be a positive integer"
             )
         
-        # Query database for the specific quiz
         try:
             quiz = db.query(Quiz).filter(Quiz.id == quiz_id).first()
             
@@ -538,7 +501,6 @@ async def get_quiz_by_id(
         # Re-raise HTTP exceptions as-is
         raise
     except Exception as e:
-        # Catch any unexpected errors
         logger.error(f"Unexpected error in get_quiz_by_id: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -549,12 +511,6 @@ async def get_quiz_by_id(
 # Additional error handling utilities and middleware
 @app.middleware("http")
 async def error_handling_middleware(request, call_next):
-    """
-    Middleware to handle errors and add request logging.
-    
-    Logs all requests and handles any unhandled exceptions
-    that might occur during request processing.
-    """
     start_time = datetime.utcnow()
     
     try:
@@ -648,17 +604,8 @@ def create_error_response(error_type: str, message: str, details: Optional[str] 
     }
 
 
+# Handle database errors with appropriate HTTP responses.
 def handle_database_error(e: Exception, operation: str) -> HTTPException:
-    """
-    Handle database errors with appropriate HTTP responses.
-    
-    Args:
-        e (Exception): The database exception
-        operation (str): Description of the operation that failed
-        
-    Returns:
-        HTTPException: Appropriate HTTP exception
-    """
     logger.error(f"Database error during {operation}: {str(e)}")
     
     if isinstance(e, SQLAlchemyError):
@@ -674,16 +621,6 @@ def handle_database_error(e: Exception, operation: str) -> HTTPException:
 
 
 def handle_validation_error(e: Exception, context: str) -> HTTPException:
-    """
-    Handle validation errors with appropriate HTTP responses.
-    
-    Args:
-        e (Exception): The validation exception
-        context (str): Context where validation failed
-        
-    Returns:
-        HTTPException: Appropriate HTTP exception
-    """
     logger.warning(f"Validation error in {context}: {str(e)}")
     
     return HTTPException(
@@ -692,7 +629,6 @@ def handle_validation_error(e: Exception, context: str) -> HTTPException:
     )
 
 
-# Additional endpoint for API information
 @app.get("/api/info")
 async def api_info():
     """
@@ -722,7 +658,6 @@ async def api_info():
 if __name__ == "__main__":
     import uvicorn
     
-    # Run the application
     uvicorn.run(
         "main:app",
         host="0.0.0.0",

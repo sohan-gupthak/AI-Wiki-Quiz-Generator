@@ -67,7 +67,6 @@ def is_valid_wikipedia_url(url: str) -> bool:
             if '#' in url or '?' in url:
                 return False
             
-            # Check for valid article path (must have /wiki/ and article name)
             if '/wiki/' not in wiki_path or wiki_path.endswith('/wiki/'):
                 return False
                 
@@ -76,16 +75,8 @@ def is_valid_wikipedia_url(url: str) -> bool:
     return False
 
 
+# Validate if a Wikipedia URL is accessible without full scraping.
 def validate_url_accessibility(url: str) -> Tuple[bool, str]:
-    """
-    Validate if a Wikipedia URL is accessible without full scraping.
-    
-    Args:
-        url (str): Wikipedia URL to validate
-        
-    Returns:
-        Tuple[bool, str]: (is_valid, error_message)
-    """
     if not is_valid_wikipedia_url(url):
         return False, "Invalid Wikipedia URL format"
     
@@ -99,7 +90,6 @@ def validate_url_accessibility(url: str) -> Tuple[bool, str]:
         elif response.status_code >= 400:
             return False, f"HTTP error: {response.status_code}"
         
-        # Check content type
         content_type = response.headers.get('content-type', '').lower()
         if 'text/html' not in content_type:
             return False, "Invalid content type - not an HTML page"
@@ -117,15 +107,6 @@ def validate_url_accessibility(url: str) -> Tuple[bool, str]:
 
 
 def extract_article_title(soup: BeautifulSoup) -> str:
-    """
-    Extract the article title from Wikipedia HTML.
-    
-    Args:
-        soup (BeautifulSoup): Parsed HTML content
-        
-    Returns:
-        str: Article title
-    """
     # Try multiple selectors for title
     title_selectors = [
         'h1.firstHeading',
@@ -153,15 +134,6 @@ def extract_article_title(soup: BeautifulSoup) -> str:
 
 
 def clean_wikipedia_content(soup: BeautifulSoup) -> str:
-    """
-    Clean Wikipedia HTML content by removing unwanted elements.
-    
-    Args:
-        soup (BeautifulSoup): Parsed HTML content
-        
-    Returns:
-        str: Cleaned article text
-    """
     # Find the main content area
     content_div = soup.find('div', {'id': 'mw-content-text'})
     if not content_div:
@@ -247,15 +219,6 @@ def clean_wikipedia_content(soup: BeautifulSoup) -> str:
 
 
 def clean_text_content(text: str) -> str:
-    """
-    Clean extracted text content.
-    
-    Args:
-        text (str): Raw extracted text
-        
-    Returns:
-        str: Cleaned text
-    """
     # Remove citation markers like [1], [citation needed], etc.
     text = re.sub(r'\[[^\]]*\]', '', text)
     
@@ -277,7 +240,6 @@ def clean_text_content(text: str) -> str:
     for pattern in boilerplate_patterns:
         text = re.sub(pattern, '', text, flags=re.IGNORECASE)
     
-    # Clean up any remaining multiple spaces
     text = re.sub(r'\s+', ' ', text).strip()
     
     return text
@@ -342,14 +304,11 @@ async def scrape_wikipedia(url: str) -> Tuple[Optional[str], Optional[str]]:
                 logger.warning(f"Connection error on attempt {attempt + 1}, retrying...")
                 continue
         
-        # Check response status
         response.raise_for_status()
         
-        # Check content length
         if len(response.content) > MAX_CONTENT_LENGTH:
             raise ValueError(f"Article content too large: {len(response.content)} bytes (max: {MAX_CONTENT_LENGTH})")
         
-        # Check if it's actually HTML
         content_type = response.headers.get('content-type', '').lower()
         if 'text/html' not in content_type:
             raise ValueError(f"Invalid content type: {content_type} (expected HTML)")
@@ -360,7 +319,6 @@ async def scrape_wikipedia(url: str) -> Tuple[Optional[str], Optional[str]]:
         except Exception as e:
             raise ValueError(f"Failed to parse HTML content: {str(e)}")
         
-        # Check if page exists (Wikipedia shows specific messages for missing pages)
         error_indicators = [
             "Wikipedia does not have an article",
             "The page you requested does not exist",
@@ -479,8 +437,7 @@ def scrape_wikipedia_sync(url: str) -> Tuple[Optional[str], Optional[str]]:
         # Try to get existing event loop
         try:
             loop = asyncio.get_running_loop()
-            # If we're in an async context, we need to handle this differently
-            # For now, we'll use a simple synchronous approach
+            # If we're in an async context, we need to handle this differently (this is simple synchronous approach)
             return _scrape_wikipedia_sync_internal(url)
         except RuntimeError:
             # No running loop, we can use asyncio.run
@@ -489,17 +446,8 @@ def scrape_wikipedia_sync(url: str) -> Tuple[Optional[str], Optional[str]]:
         # Fallback to synchronous implementation
         return _scrape_wikipedia_sync_internal(url)
 
-
+# retuns tuple(title, content)
 def _scrape_wikipedia_sync_internal(url: str) -> Tuple[Optional[str], Optional[str]]:
-    """
-    Internal synchronous implementation of Wikipedia scraping.
-    
-    Args:
-        url (str): Wikipedia URL to scrape
-        
-    Returns:
-        Tuple[Optional[str], Optional[str]]: (title, content) or (None, None) if failed
-    """
     # Validate URL format first
     if not is_valid_wikipedia_url(url):
         raise ValueError(f"Invalid Wikipedia URL format: {url}")
@@ -530,14 +478,11 @@ def _scrape_wikipedia_sync_internal(url: str) -> Tuple[Optional[str], Optional[s
             allow_redirects=True
         )
         
-        # Check response status
         response.raise_for_status()
         
-        # Check content length
         if len(response.content) > MAX_CONTENT_LENGTH:
             raise ValueError(f"Article content too large: {len(response.content)} bytes (max: {MAX_CONTENT_LENGTH})")
         
-        # Check if it's actually HTML
         content_type = response.headers.get('content-type', '').lower()
         if 'text/html' not in content_type:
             raise ValueError(f"Invalid content type: {content_type} (expected HTML)")
@@ -548,7 +493,6 @@ def _scrape_wikipedia_sync_internal(url: str) -> Tuple[Optional[str], Optional[s
         except Exception as e:
             raise ValueError(f"Failed to parse HTML content: {str(e)}")
         
-        # Check if page exists
         error_indicators = [
             "Wikipedia does not have an article",
             "The page you requested does not exist",
@@ -615,7 +559,6 @@ def _scrape_wikipedia_sync_internal(url: str) -> Tuple[Optional[str], Optional[s
 
 
 if __name__ == "__main__":
-    # Test the scraper with a sample URL
     test_url = "https://en.wikipedia.org/wiki/Artificial_intelligence"
     
     try:

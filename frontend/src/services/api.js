@@ -1,13 +1,6 @@
-// API service layer for communicating with the backend
-
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
 
-/**
- * Generic API request handler with error handling
- * @param {string} endpoint - API endpoint path
- * @param {object} options - Fetch options
- * @returns {Promise<any>} - API response data
- */
+// apiRequest with error handling
 async function apiRequest(endpoint, options = {}) {
   const url = `${API_BASE_URL}${endpoint}`
   
@@ -40,7 +33,6 @@ async function apiRequest(endpoint, options = {}) {
     }
 
     if (!response.ok) {
-      // Extract error message from response
       const errorMessage = typeof data === 'object' && data.detail 
         ? data.detail 
         : typeof data === 'string' 
@@ -52,21 +44,14 @@ async function apiRequest(endpoint, options = {}) {
 
     return data
   } catch (error) {
-    // Handle network errors and other exceptions
     if (error.name === 'TypeError' && error.message.includes('fetch')) {
       throw new Error('Unable to connect to the server. Please check your connection and try again.')
     }
     
-    // Re-throw API errors with original message
     throw error
   }
 }
 
-/**
- * Generate a quiz from a Wikipedia URL
- * @param {string} url - Wikipedia URL
- * @returns {Promise<object>} - Quiz response object
- */
 export async function generateQuiz(url) {
   if (!url || typeof url !== 'string') {
     throw new Error('URL is required and must be a string')
@@ -84,19 +69,10 @@ export async function generateQuiz(url) {
   })
 }
 
-/**
- * Get quiz history (list of all generated quizzes)
- * @returns {Promise<Array>} - Array of quiz summary objects
- */
 export async function getQuizHistory() {
   return apiRequest('/history')
 }
 
-/**
- * Get a specific quiz by ID
- * @param {number} quizId - Quiz ID
- * @returns {Promise<object>} - Complete quiz object
- */
 export async function getQuizById(quizId) {
   if (!quizId || typeof quizId !== 'number') {
     throw new Error('Quiz ID is required and must be a number')
@@ -105,11 +81,7 @@ export async function getQuizById(quizId) {
   return apiRequest(`/quiz/${quizId}`)
 }
 
-/**
- * Validate a Wikipedia URL format
- * @param {string} url - URL to validate
- * @returns {boolean} - True if valid Wikipedia URL
- */
+// returns {boolean} - True if valid Wikipedia URL
 export function isValidWikipediaUrl(url) {
   if (!url || typeof url !== 'string') {
     return false
@@ -119,11 +91,6 @@ export function isValidWikipediaUrl(url) {
   return wikipediaUrlPattern.test(url)
 }
 
-/**
- * Extract article title from Wikipedia URL for preview
- * @param {string} url - Wikipedia URL
- * @returns {string} - Article title or empty string if invalid
- */
 export function extractArticleTitle(url) {
   if (!isValidWikipediaUrl(url)) {
     return ''
@@ -141,7 +108,6 @@ export function extractArticleTitle(url) {
   }
 }
 
-// Export default object with all API functions
 const api = {
   generateQuiz,
   getQuizHistory,

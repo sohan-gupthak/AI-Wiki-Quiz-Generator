@@ -17,7 +17,6 @@ function App() {
           </p>
         </header>
 
-        {/* Tab Navigation */}
         <div className="flex justify-center mb-8">
           <div className="bg-white rounded-lg shadow-sm p-1 flex">
             <button
@@ -43,7 +42,6 @@ function App() {
           </div>
         </div>
 
-        {/* Tab Content */}
         <div className="max-w-4xl mx-auto">
           {activeTab === 'generate' && <GenerateQuizTab />}
           {activeTab === 'history' && <HistoryTab />}

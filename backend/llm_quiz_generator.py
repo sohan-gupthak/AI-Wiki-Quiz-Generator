@@ -1,10 +1,3 @@
-"""
-LLM Quiz Generator using LangChain and Gemini API.
-
-This module handles the integration with Google's Gemini API through LangChain
-to generate structured quiz content from Wikipedia articles.
-"""
-
 import os
 import json
 import logging
@@ -30,12 +23,6 @@ logger = logging.getLogger(__name__)
 
 
 class LLMQuizGenerator:
-    """
-    LLM-powered quiz generator using Gemini API through LangChain.
-    
-    This class handles the initialization of the Gemini model, prompt template,
-    and JSON output parser for structured quiz generation.
-    """
     
     def __init__(self):
         """Initialize the LLM quiz generator with Gemini API."""
@@ -46,15 +33,6 @@ class LLMQuizGenerator:
         self.chain = None
         
     def _get_api_key(self) -> str:
-        """
-        Retrieve and validate the Google API key from environment variables.
-        
-        Returns:
-            str: The Google API key
-            
-        Raises:
-            ValueError: If the API key is not found or empty
-        """
         api_key = os.getenv("GOOGLE_API_KEY")
         if not api_key:
             raise ValueError(
@@ -65,8 +43,6 @@ class LLMQuizGenerator:
     
     def _initialize_model(self) -> ChatGoogleGenerativeAI:
         """
-        Initialize the Gemini model with appropriate configuration.
-        
         Returns:
             ChatGoogleGenerativeAI: Configured Gemini model instance
         """
@@ -163,9 +139,6 @@ Generate the response in the exact JSON format specified above. Ensure all field
         
         Creates a chain that combines prompt template, model, and JSON parser
         with proper input formatting.
-        
-        Returns:
-            The configured LangChain chain
         """
         if self.chain is None:
             self.chain = (
@@ -176,12 +149,6 @@ Generate the response in the exact JSON format specified above. Ensure all field
         return self.chain
     
     def validate_environment(self) -> Dict[str, Any]:
-        """
-        Validate the environment setup for LLM integration.
-        
-        Returns:
-            Dict[str, Any]: Environment validation results
-        """
         validation_results = {
             "api_key_configured": bool(self.api_key),
             "model_initialized": self.model is not None,
@@ -276,8 +243,6 @@ Generate the response in the exact JSON format specified above. Ensure all field
     
     def _validate_quiz_response(self, quiz_response: QuizResponse) -> None:
         """
-        Perform additional validation on the generated quiz response.
-        
         Args:
             quiz_response (QuizResponse): The quiz response to validate
             
@@ -323,12 +288,6 @@ llm_quiz_generator = None
 
 
 def get_llm_quiz_generator() -> LLMQuizGenerator:
-    """
-    Get or create the global LLM quiz generator instance.
-    
-    Returns:
-        LLMQuizGenerator: The configured quiz generator instance
-    """
     global llm_quiz_generator
     if llm_quiz_generator is None:
         llm_quiz_generator = LLMQuizGenerator()
@@ -337,10 +296,6 @@ def get_llm_quiz_generator() -> LLMQuizGenerator:
 
 async def generate_quiz_from_content(title: str, content: str, url: str = "") -> QuizResponse:
     """
-    Generate a quiz from Wikipedia article content.
-    
-    This is the main function used by the API endpoints to generate quizzes.
-    
     Args:
         title (str): The Wikipedia article title
         content (str): The cleaned article content

@@ -61,12 +61,6 @@ class Quiz(Base):
 
 
 def get_db() -> Session:
-    """
-    Dependency function to get database session.
-    
-    Yields a database session and ensures it's closed after use.
-    Used as a FastAPI dependency.
-    """
     db = SessionLocal()
     try:
         yield db
@@ -75,32 +69,14 @@ def get_db() -> Session:
 
 
 def create_tables():
-    """
-    Create all database tables.
-    
-    This function creates all tables defined in the Base metadata.
-    Should be called during application startup.
-    """
     Base.metadata.create_all(bind=engine)
 
 
 def drop_tables():
-    """
-    Drop all database tables.
-    
-    WARNING: This will delete all data in the database.
-    Use only for testing or development reset.
-    """
     Base.metadata.drop_all(bind=engine)
 
 
 def init_database():
-    """
-    Initialize the database by creating all tables.
-    
-    This is a convenience function that can be called during
-    application startup to ensure all tables exist.
-    """
     try:
         create_tables()
         print("Database tables created successfully")
@@ -110,11 +86,6 @@ def init_database():
 
 
 def get_database_info():
-    """
-    Get basic database connection information.
-    
-    Returns information about the database connection for debugging.
-    """
     return {
         "database_url": DATABASE_URL.replace(DATABASE_URL.split('@')[0].split('//')[1], "***"),
         "engine_info": str(engine.url).replace(str(engine.url).split('@')[0].split('//')[1], "***"),
@@ -125,12 +96,6 @@ def get_database_info():
 
 # Database session dependency for FastAPI
 def get_database_session():
-    """
-    Get a database session for use in FastAPI endpoints.
-    
-    This function creates a new session, yields it for use,
-    and ensures it's properly closed afterwards.
-    """
     db = SessionLocal()
     try:
         yield db

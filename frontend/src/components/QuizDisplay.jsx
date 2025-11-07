@@ -44,7 +44,6 @@ function QuizDisplay({ quizData, showAnswers = true }) {
     quizData.quiz.forEach((question, index) => {
       let matched = false
       
-      // Try to match question to a section based on explanation
       if (question.explanation) {
         for (const section of quizData.sections) {
           if (question.explanation.toLowerCase().includes(section.toLowerCase())) {
@@ -77,7 +76,6 @@ function QuizDisplay({ quizData, showAnswers = true }) {
 
   return (
     <div className="space-y-6">
-      {/* Title and Summary */}
       <div className="bg-white rounded-lg shadow-sm p-6">
         <h2 className="text-3xl font-bold text-gray-800 mb-4">
           {quizData.title}
@@ -90,7 +88,6 @@ function QuizDisplay({ quizData, showAnswers = true }) {
         )}
       </div>
 
-      {/* Key Entities */}
       {quizData.key_entities && (
         <div className="bg-white rounded-lg shadow-sm p-6">
           <h3 className="text-xl font-semibold text-gray-800 mb-4">Key Entities</h3>
@@ -140,7 +137,6 @@ function QuizDisplay({ quizData, showAnswers = true }) {
         </div>
       )}
 
-      {/* Article Sections */}
       {quizData.sections && quizData.sections.length > 0 && (
         <div className="bg-white rounded-lg shadow-sm p-6">
           <h3 className="text-xl font-semibold text-gray-800 mb-4">Article Sections</h3>
@@ -157,7 +153,6 @@ function QuizDisplay({ quizData, showAnswers = true }) {
         </div>
       )}
 
-      {/* Quiz Questions */}
       {quizData.quiz && quizData.quiz.length > 0 && (
         <div className="bg-white rounded-lg shadow-sm p-6">
           <div className="flex justify-between items-center mb-6">
@@ -192,7 +187,6 @@ function QuizDisplay({ quizData, showAnswers = true }) {
           )}
 
           {groupBySection ? (
-            // Render questions grouped by section
             <div className="space-y-8">
               {Object.entries(groupedQuestions).map(([sectionName, questions]) => (
                 <div key={sectionName} className="border-l-4 border-blue-500 pl-4">
@@ -274,7 +268,6 @@ function QuizDisplay({ quizData, showAnswers = true }) {
               ))}
             </div>
           ) : (
-            // Render all questions in order
             <div className="space-y-6">
               {quizData.quiz.map((question, questionIndex) => (
               <div key={questionIndex} className="border-b border-gray-200 pb-6 last:border-b-0">
@@ -349,7 +342,6 @@ function QuizDisplay({ quizData, showAnswers = true }) {
         </div>
       )}
 
-      {/* Related Topics */}
       {quizData.related_topics && quizData.related_topics.length > 0 && (
         <div className="bg-white rounded-lg shadow-sm p-6">
           <h3 className="text-xl font-semibold text-gray-800 mb-4">Related Topics</h3>
