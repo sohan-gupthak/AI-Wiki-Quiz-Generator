@@ -241,20 +241,20 @@ function QuizDisplay({ quizData, showAnswers = true }) {
                               }
 
                               return (
-                                <div
-                                  key={optionIndex}
-                                  className={optionClass}
-                                  onClick={() => !showAnswers && !showResults && handleAnswerSelect(questionIndex, optionLetter)}
-                                >
-                                  <span className="font-medium mr-2">{optionLetter}.</span>
-                                  {option}
-                                  {showCorrectAnswer && isCorrect && (
-                                    <span className="ml-2 text-green-600">✓</span>
-                                  )}
-                                  {showResults && isSelected && !isCorrect && (
-                                    <span className="ml-2 text-red-600">✗</span>
-                                  )}
-                                </div>
+                                  <div
+                                    key={optionIndex}
+                                    className={optionClass}
+                                    onClick={() => !showAnswers && !showResults && handleAnswerSelect(questionIndex, optionLetter)}
+                                  >
+                                    <span className="font-medium mr-2">{optionLetter}.</span>
+                                    {option.replace(/^[A-D]\.\s*/, '')}
+                                    {showCorrectAnswer && isCorrect && (
+                                      <span className="ml-2 text-green-600">✓</span>
+                                    )}
+                                    {showResults && isSelected && !isCorrect && (
+                                      <span className="ml-2 text-red-600">✗</span>
+                                    )}
+                                  </div>
                               )
                             })}
                           </div>
@@ -323,7 +323,7 @@ function QuizDisplay({ quizData, showAnswers = true }) {
                         onClick={() => !showAnswers && !showResults && handleAnswerSelect(questionIndex, optionLetter)}
                       >
                         <span className="font-medium mr-2">{optionLetter}.</span>
-                        {option}
+                        {option.replace(/^[A-D]\.\s*/, '')}
                         {showCorrectAnswer && isCorrect && (
                           <span className="ml-2 text-green-600">✓</span>
                         )}
