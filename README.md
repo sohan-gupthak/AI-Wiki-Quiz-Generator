@@ -123,7 +123,7 @@ Before you begin, ensure you have the following installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/sohan-gupthak/AI-Wiki-Quiz-Generator.git
 cd ai-wiki-quiz-generator
 ```
 
@@ -862,11 +862,6 @@ The application follows a three-tier architecture:
 - CORS configuration for cross-origin requests
 - Request size limits to prevent memory issues
 
----
-
-## License
-
-This project is provided as-is for educational purposes.
 
 ## Acknowledgments
 
