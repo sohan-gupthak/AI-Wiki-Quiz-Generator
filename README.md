@@ -4,6 +4,7 @@ A full-stack web application that transforms Wikipedia articles into comprehensi
 
 ## Table of Contents
 
+- [Screenshots](#screenshots)
 - [Features](#features)
 - [Technology Stack](#technology-stack)
 - [Project Structure](#project-structure)
@@ -16,6 +17,15 @@ A full-stack web application that transforms Wikipedia articles into comprehensi
 - [Usage Guide](#usage-guide)
 - [Troubleshooting](#troubleshooting)
 - [Architecture](#architecture)
+
+## Screenshots
+
+![ai-wiki-quiz-generator_48_6s](https://github.com/user-attachments/assets/f3c24768-fb8f-496f-8faf-1fde03d1d378)
+
+![ai-wiki-quiz-generator_111_7s](https://github.com/user-attachments/assets/408b8581-cd2e-4cc3-9df6-8c5e6c416d5d)
+
+![ai-wiki-quiz-generator_138_5s](https://github.com/user-attachments/assets/2fe4fdd1-fdb1-4133-a44a-683fc4c6bc4e)
+
 
 ## Features
 
