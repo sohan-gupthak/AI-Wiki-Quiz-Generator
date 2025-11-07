@@ -9,7 +9,8 @@ and history management.
 import logging
 import traceback
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Dict
+from collections import OrderedDict
 
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -32,6 +33,30 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+# Simple in-memory cache for quiz data (URL -> quiz_id mapping)
+# Using OrderedDict for LRU-like behavior
+QUIZ_CACHE_MAX_SIZE = 100
+quiz_cache: OrderedDict[str, int] = OrderedDict()
+
+def add_to_cache(url: str, quiz_id: int):
+    """Add a quiz to the cache with LRU eviction."""
+    if url in quiz_cache:
+        # Move to end (most recently used)
+        quiz_cache.move_to_end(url)
+    else:
+        quiz_cache[url] = quiz_id
+        # Evict oldest if cache is full
+        if len(quiz_cache) > QUIZ_CACHE_MAX_SIZE:
+            quiz_cache.popitem(last=False)
+
+def get_from_cache(url: str) -> Optional[int]:
+    """Get quiz ID from cache if it exists."""
+    if url in quiz_cache:
+        # Move to end (most recently used)
+        quiz_cache.move_to_end(url)
+        return quiz_cache[url]
+    return None
 
 # Create FastAPI application
 app = FastAPI(
@@ -213,6 +238,28 @@ async def generate_quiz(
                 detail="Invalid Wikipedia URL format. Please provide a valid English Wikipedia article URL."
             )
         
+        # Step 1.5: Check cache for existing quiz
+        cached_quiz_id = get_from_cache(request.url)
+        if cached_quiz_id:
+            logger.info(f"Cache hit for URL: {request.url} (quiz_id: {cached_quiz_id})")
+            try:
+                # Retrieve cached quiz from database
+                cached_quiz = db.query(Quiz).filter(Quiz.id == cached_quiz_id).first()
+                if cached_quiz:
+                    quiz_data = json.loads(cached_quiz.full_quiz_data)
+                    quiz_response = QuizResponse(**quiz_data)
+                    quiz_response.id = cached_quiz.id
+                    logger.info(f"Returning cached quiz {cached_quiz_id}")
+                    return quiz_response
+                else:
+                    # Cache entry is stale, remove it
+                    logger.warning(f"Cached quiz {cached_quiz_id} not found in database, regenerating")
+                    quiz_cache.pop(request.url, None)
+            except Exception as e:
+                logger.error(f"Error retrieving cached quiz: {str(e)}")
+                # Continue to regenerate if cache retrieval fails
+                quiz_cache.pop(request.url, None)
+        
         # Step 2: Scrape Wikipedia content
         try:
             title, content = scrape_wikipedia_sync(request.url)
@@ -286,7 +333,9 @@ async def generate_quiz(
             # Update response with database ID
             quiz_response.id = db_quiz.id
             
-            logger.info(f"Quiz stored in database with ID: {db_quiz.id}")
+            # Add to cache
+            add_to_cache(request.url, db_quiz.id)
+            logger.info(f"Quiz stored in database with ID: {db_quiz.id} and added to cache")
             
         except SQLAlchemyError as e:
             db.rollback()

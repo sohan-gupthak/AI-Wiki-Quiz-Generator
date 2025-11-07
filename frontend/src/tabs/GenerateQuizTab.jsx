@@ -10,6 +10,7 @@ function GenerateQuizTab() {
   const [error, setError] = useState('')
   const [quizData, setQuizData] = useState(null)
   const [urlPreview, setUrlPreview] = useState('')
+  const [takeQuizMode, setTakeQuizMode] = useState(false)
 
   const handleUrlChange = (e) => {
     const newUrl = e.target.value
@@ -66,6 +67,7 @@ function GenerateQuizTab() {
     setUrl('')
     setUrlPreview('')
     setError('')
+    setTakeQuizMode(false)
   }
 
   return (
@@ -134,14 +136,26 @@ function GenerateQuizTab() {
         <div>
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-semibold text-gray-800">Generated Quiz</h3>
-            <button
-              onClick={handleGenerateAnother}
-              className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors text-sm"
-            >
-              Generate Another Quiz
-            </button>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setTakeQuizMode(!takeQuizMode)}
+                className={`px-4 py-2 rounded-md transition-colors text-sm ${
+                  takeQuizMode 
+                    ? 'bg-blue-500 text-white hover:bg-blue-600' 
+                    : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                }`}
+              >
+                {takeQuizMode ? 'View Answers' : 'Take Quiz'}
+              </button>
+              <button
+                onClick={handleGenerateAnother}
+                className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors text-sm"
+              >
+                Generate Another Quiz
+              </button>
+            </div>
           </div>
-          <QuizDisplay quizData={quizData} showAnswers={true} />
+          <QuizDisplay quizData={quizData} showAnswers={!takeQuizMode} />
         </div>
       )}
     </div>
