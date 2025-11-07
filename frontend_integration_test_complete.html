@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Integration Test - AI Wiki Quiz Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .test-section {
+            margin-bottom: 30px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .test-section-header {
+            background: #f5f5f5;
+            padding: 15px 20px;
+            font-weight: 600;
+            font-size: 16px;
+            color: #333;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .test-section-body {
+            padding: 20px;
+        }
+
+        .test-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            background: #f9f9f9;
+        }
+
+        .test-item.passed {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+        }
+
+        .test-item.failed {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+        }
+
+        .test-item.running {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+        }
+
+        .test-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            font-size: 18px;
+        }
+
+        .test-name {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .test-details {
+            font-size: 12px;
+            color: #666;
+            margin-left: 36px;
+            margin-top: 4px;
+        }
+
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .summary {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .summary-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+        }
+
+        .summary-value {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .summary-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .log-container {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+
+        .log-entry {
+            margin-bottom: 4px;
+            line-height: 1.5;
+        }
+
+        .log-success { color: #4caf50; }
+        .log-error { color: #f44336; }
+        .log-info { color: #2196f3; }
+        .log-warning { color: #ff9800; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 Frontend Integration Test</h1>
+            <p>AI Wiki Quiz Generator - Complete System Test</p>
+        </div>
+
+        <div class="content">
+            <div class="test-section">
+                <div class="test-section-header">Configuration</div>
+                <div class="test-section-body">
+                    <div class="input-group">
+                        <label for="apiUrl">API Base URL:</label>
+                        <input type="text" id="apiUrl" value="http://localhost:8000" />
+                    </div>
+                    <button class="button" onclick="runAllTests()" id="runButton">
+                        Run All Tests
+                    </button>
+                </div>
+            </div>
+
+            <div class="test-section">
+                <div class="test-section-header">Test 1: API Connectivity</div>
+                <div class="test-section-body" id="test1"></div>
+            </div>
+
+            <div class="test-section">
+                <div class="test-section-header">Test 2: Quiz Generation Flow</div>
+                <div class="test-section-body" id="test2"></div>
+            </div>
+
+            <div class="test-section">
+                <div class="test-section-header">Test 3: History Functionality</div>
+                <div class="test-section-body" id="test3"></div>
+            </div>
+
+            <div class="test-section">
+                <div class="test-section-header">Test 4: Quiz Retrieval</div>
+                <div class="test-section-body" id="test4"></div>
+            </div>
+
+            <div class="test-section">
+                <div class="test-section-header">Test 5: Error Handling</div>
+                <div class="test-section-body" id="test5"></div>
+            </div>
+
+            <div class="test-section">
+                <div class="test-section-header">Test 6: Data Validation</div>
+                <div class="test-section-body" id="test6"></div>
+            </div>
+
+            <div class="summary">
+                <h3>Test Summary</h3>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="summary-value" id="totalTests">0</div>
+                        <div class="summary-label">Total Tests</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-value" style="color: #4caf50;" id="passedTests">0</div>
+                        <div class="summary-label">Passed</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-value" style="color: #f44336;" id="failedTests">0</div>
+                        <div class="summary-label">Failed</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-value" id="passRate">0%</div>
+                        <div class="summary-label">Pass Rate</div>
+                    </div>
+                </div>
+                <div class="log-container" id="logContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let API_BASE_URL = 'http://localhost:8000';
+        let testResults = { total: 0, passed: 0, failed: 0 };
+        let generatedQuizData = null;
+
+        function log(message, type = 'info') {
+            const logContainer = document.getElementById('logContainer');
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        function addTestResult(containerId, testName, passed, details = '') {
+            testResults.total++;
+            if (passed) testResults.passed++;
+            else testResults.failed++;
+
+            const container = document.getElementById(containerId);
+            const testItem = document.createElement('div');
+            testItem.className = `test-item ${passed ? 'passed' : 'failed'}`;
+            testItem.innerHTML = `
+                <div class="test-icon">${passed ? '✓' : '✗'}</div>
+                <div class="test-name">${testName}</div>
+            `;
+            if (details) {
+                const detailsDiv = document.createElement('div');
+                detailsDiv.className = 'test-details';
+                detailsDiv.textContent = details;
+                testItem.appendChild(detailsDiv);
+            }
+            container.appendChild(testItem);
+
+            updateSummary();
+            log(`${passed ? 'PASS' : 'FAIL'}: ${testName}`, passed ? 'success' : 'error');
+        }
+
+        function updateSummary() {
+            document.getElementById('totalTests').textContent = testResults.total;
+            document.getElementById('passedTests').textContent = testResults.passed;
+            document.getElementById('failedTests').textContent = testResults.failed;
+            const passRate = testResults.total > 0 
+                ? ((testResults.passed / testResults.total) * 100).toFixed(1) 
+                : 0;
+            document.getElementById('passRate').textContent = `${passRate}%`;
+        }
+
+        async function apiRequest(endpoint, options = {}) {
+            const url = `${API_BASE_URL}${endpoint}`;
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers,
+                    },
+                    ...options,
+                });
+
+                let data;
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    data = await response.json();
+                } else {
+                    data = await response.text();
+                }
+
+                return { response, data, ok: response.ok };
+            } catch (error) {
+                return { error: error.message, ok: false };
+            }
+        }
+
+        async function test1_APIConnectivity() {
+            log('Starting API Connectivity tests...', 'info');
+            
+            // Test health endpoint
+            const { response, data, ok, error } = await apiRequest('/health');
+            addTestResult('test1', 'Health endpoint accessible', !error && ok,
+                error ? `Error: ${error}` : `Status: ${data?.status}`);
+            
+            if (data) {
+                addTestResult('test1', 'Database connection verified', data.database_connected === true,
+                    `Database connected: ${data.database_connected}`);
+            }
+
+            // Test root endpoint
+            const { ok: rootOk } = await apiRequest('/');
+            addTestResult('test1', 'Root endpoint accessible', rootOk);
+
+            return ok && data?.database_connected;
+        }
+
+        async function test2_QuizGeneration() {
+            log('Starting Quiz Generation tests...', 'info');
+            
+            const testUrl = 'https://en.wikipedia.org/wiki/Python_(programming_language)';
+            log(`Generating quiz for: ${testUrl}`, 'info');
+
+            const { response, data, ok, error } = await apiRequest('/generate_quiz', {
+                method: 'POST',
+                body: JSON.stringify({ url: testUrl }),
+            });
+
+            addTestResult('test2', 'Quiz generation request sent', !error,
+                error ? `Error: ${error}` : 'Request successful');
+
+            if (!ok) {
+                addTestResult('test2', 'Quiz generated successfully', false,
+                    data?.detail || 'Unknown error');
+                return null;
+            }
+
+            addTestResult('test2', 'Quiz generated successfully', ok,
+                `Generated quiz with ID: ${data?.id}`);
+
+            // Validate response structure
+            addTestResult('test2', 'Response contains ID', data && data.id !== undefined,
+                `ID: ${data?.id}`);
+            addTestResult('test2', 'Response contains title', data && data.title?.length > 0,
+                `Title: ${data?.title}`);
+            addTestResult('test2', 'Response contains summary', data && data.summary?.length > 0,
+                `Summary length: ${data?.summary?.length} chars`);
+            addTestResult('test2', 'Response contains quiz questions', 
+                data && Array.isArray(data.quiz) && data.quiz.length > 0,
+                `Questions: ${data?.quiz?.length}`);
+            addTestResult('test2', 'Response contains key entities', 
+                data && data.key_entities !== undefined);
+            addTestResult('test2', 'Response contains sections', 
+                data && Array.isArray(data.sections),
+                `Sections: ${data?.sections?.length}`);
+            addTestResult('test2', 'Response contains related topics', 
+                data && Array.isArray(data.related_topics),
+                `Related topics: ${data?.related_topics?.length}`);
+
+            generatedQuizData = data;
+            return data;
+        }
+
+        async function test3_History() {
+            log('Starting History tests...', 'info');
+
+            const { response, data, ok, error } = await apiRequest('/history');
+
+            addTestResult('test3', 'History endpoint accessible', !error && ok,
+                error ? `Error: ${error}` : 'Request successful');
+
+            addTestResult('test3', 'History returns array', Array.isArray(data),
+                `History count: ${data?.length || 0}`);
+
+            if (data && data.length > 0) {
+                const firstQuiz = data[0];
+                addTestResult('test3', 'History items have required fields',
+                    firstQuiz.id !== undefined &&
+                    firstQuiz.url !== undefined &&
+                    firstQuiz.title !== undefined &&
+                    firstQuiz.date_generated !== undefined,
+                    `First quiz: ID=${firstQuiz.id}`);
+
+                const dateValid = !isNaN(Date.parse(firstQuiz.date_generated));
+                addTestResult('test3', 'Date format is valid', dateValid,
+                    `Date: ${firstQuiz.date_generated}`);
+            }
+
+            return data;
+        }
+
+        async function test4_QuizRetrieval(quizId) {
+            log('Starting Quiz Retrieval tests...', 'info');
+
+            if (!quizId) {
+                log('No quiz ID available, skipping retrieval test', 'warning');
+                return null;
+            }
+
+            log(`Retrieving quiz with ID: ${quizId}`, 'info');
+
+            const { response, data, ok, error } = await apiRequest(`/quiz/${quizId}`);
+
+            addTestResult('test4', 'Quiz retrieval by ID', !error && ok,
+                error ? `Error: ${error}` : `Retrieved quiz: ${data?.title}`);
+
+            if (data) {
+                addTestResult('test4', 'Retrieved quiz has complete data',
+                    data.id === quizId &&
+                    data.title && data.summary && data.quiz && data.key_entities,
+                    `Title: ${data.title}`);
+
+                addTestResult('test4', 'Quiz structure is valid',
+                    data.id && data.url && data.title && data.summary &&
+                    data.key_entities && data.sections && data.quiz && data.related_topics);
+            }
+
+            return data;
+        }
+
+        async function test5_ErrorHandling() {
+            log('Starting Error Handling tests...', 'info');
+
+            // Test invalid URL
+            const invalidUrl = 'https://invalid-url.com/not-wikipedia';
+            const { response: resp1, data: data1, ok: ok1 } = await apiRequest('/generate_quiz', {
+                method: 'POST',
+                body: JSON.stringify({ url: invalidUrl }),
+            });
+
+            addTestResult('test5', 'Invalid URL rejected', !ok1 && resp1?.status === 400,
+                data1?.detail || 'Error message provided');
+
+            // Test invalid quiz ID
+            const { response: resp2, data: data2, ok: ok2 } = await apiRequest('/quiz/999999');
+            addTestResult('test5', 'Invalid quiz ID returns 404', !ok2 && resp2?.status === 404,
+                data2?.detail || 'Error message provided');
+
+            // Test invalid pagination
+            const { response: resp3, ok: ok3 } = await apiRequest('/history?limit=0');
+            addTestResult('test5', 'Invalid pagination rejected', !ok3 && resp3?.status === 400);
+
+            return true;
+        }
+
+        async function test6_DataValidation(generatedQuiz, retrievedQuiz) {
+            log('Starting Data Validation tests...', 'info');
+
+            if (!generatedQuiz || !retrievedQuiz) {
+                log('Missing quiz data, skipping validation tests', 'warning');
+                return false;
+            }
+
+            addTestResult('test6', 'Generated and retrieved quiz IDs match',
+                generatedQuiz.id === retrievedQuiz.id,
+                `Generated: ${generatedQuiz.id}, Retrieved: ${retrievedQuiz.id}`);
+
+            addTestResult('test6', 'Quiz titles match',
+                generatedQuiz.title === retrievedQuiz.title);
+
+            addTestResult('test6', 'Quiz URLs match',
+                generatedQuiz.url === retrievedQuiz.url);
+
+            addTestResult('test6', 'Number of questions match',
+                generatedQuiz.quiz.length === retrievedQuiz.quiz.length,
+                `Questions: ${generatedQuiz.quiz.length}`);
+
+            // Validate question structure
+            if (generatedQuiz.quiz.length > 0) {
+                const q = generatedQuiz.quiz[0];
+                addTestResult('test6', 'Quiz questions have required fields',
+                    q.question && Array.isArray(q.options) && q.options.length === 4 &&
+                    q.answer && q.difficulty && q.explanation,
+                    `First question: "${q.question.substring(0, 40)}..."`);
+            }
+
+            // Validate key entities structure
+            if (generatedQuiz.key_entities) {
+                addTestResult('test6', 'Key entities structure is valid',
+                    Array.isArray(generatedQuiz.key_entities.people) &&
+                    Array.isArray(generatedQuiz.key_entities.organizations) &&
+                    Array.isArray(generatedQuiz.key_entities.locations),
+                    `People: ${generatedQuiz.key_entities.people?.length || 0}, ` +
+                    `Orgs: ${generatedQuiz.key_entities.organizations?.length || 0}, ` +
+                    `Locations: ${generatedQuiz.key_entities.locations?.length || 0}`);
+            }
+
+            return true;
+        }
+
+        async function runAllTests() {
+            const button = document.getElementById('runButton');
+            button.disabled = true;
+            button.innerHTML = '<span class="spinner"></span> Running Tests...';
+
+            // Reset results
+            testResults = { total: 0, passed: 0, failed: 0 };
+            generatedQuizData = null;
+            document.getElementById('logContainer').innerHTML = '';
+            ['test1', 'test2', 'test3', 'test4', 'test5', 'test6'].forEach(id => {
+                document.getElementById(id).innerHTML = '';
+            });
+
+            API_BASE_URL = document.getElementById('apiUrl').value;
+            log(`Starting integration tests against ${API_BASE_URL}`, 'info');
+
+            try {
+                // Run tests sequentially
+                const healthOk = await test1_APIConnectivity();
+                
+                if (!healthOk) {
+                    log('Backend is not healthy. Stopping tests.', 'error');
+                    button.disabled = false;
+                    button.textContent = 'Run All Tests';
+                    return;
+                }
+
+                const generatedQuiz = await test2_QuizGeneration();
+                const historyData = await test3_History();
+                
+                const quizId = generatedQuiz?.id || (historyData && historyData.length > 0 ? historyData[0].id : null);
+                const retrievedQuiz = await test4_QuizRetrieval(quizId);
+                
+                await test5_ErrorHandling();
+                await test6_DataValidation(generatedQuiz, retrievedQuiz);
+
+                log('All tests completed!', 'success');
+            } catch (error) {
+                log(`Test execution error: ${error.message}`, 'error');
+                console.error(error);
+            }
+
+            button.disabled = false;
+            button.textContent = 'Run All Tests';
+        }
+    </script>
+</body>
+</html>

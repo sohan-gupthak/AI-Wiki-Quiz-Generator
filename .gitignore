@@ -1,0 +1,9 @@
+# Environment files
+.env
+
+# Powershell files
+*.ps1
+
+# IDE specific files
+.vscode
+.kiro

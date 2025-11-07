@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Integration Test</title>
+</head>
+<body>
+    <h1>API Integration Test</h1>
+    <button onclick="testHealth()">Test Health Endpoint</button>
+    <button onclick="testHistory()">Test History Endpoint</button>
+    <button onclick="testQuizGeneration()">Test Quiz Generation</button>
+    <div id="results"></div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8000';
+
+        async function testHealth() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/health`);
+                const data = await response.json();
+                document.getElementById('results').innerHTML = `<h3>Health Check:</h3><pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                document.getElementById('results').innerHTML = `<h3>Health Check Error:</h3><pre>${error.message}</pre>`;
+            }
+        }
+
+        async function testHistory() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/history`);
+                const data = await response.json();
+                document.getElementById('results').innerHTML = `<h3>History:</h3><pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                document.getElementById('results').innerHTML = `<h3>History Error:</h3><pre>${error.message}</pre>`;
+            }
+        }
+
+        async function testQuizGeneration() {
+            try {
+                document.getElementById('results').innerHTML = '<h3>Generating quiz... (this may take 30-60 seconds)</h3>';
+                const response = await fetch(`${API_BASE_URL}/generate_quiz`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        url: 'https://en.wikipedia.org/wiki/Solar_System'
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `HTTP ${response.status}`);
+                }
+                
+                const data = await response.json();
+                document.getElementById('results').innerHTML = `<h3>Quiz Generated:</h3><pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                document.getElementById('results').innerHTML = `<h3>Quiz Generation Error:</h3><pre>${error.message}</pre>`;
+            }
+        }
+    </script>
+</body>
+</html>
